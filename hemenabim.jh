@@ -1,0 +1,67 @@
+application {
+  config {
+    baseName musteri,
+    applicationType gateway,
+    packageName com.xinerji.cloud.musteri,
+    serviceDiscoveryType eureka,
+    authenticationType oauth2,
+    prodDatabaseType postgresql,
+    cacheProvider hazelcast,
+    messageBroker kafka,
+    websocket spring-websocket,
+    buildTool maven,
+    clientFramework angularX,
+    useSass true,
+    testFrameworks [protractor]
+  }
+  entities *
+}
+
+application {
+  config {
+    baseName siparis,
+    applicationType microservice,
+    packageName com.xinerji.cloud.siparis,
+    serviceDiscoveryType eureka,
+    authenticationType oauth2,
+    prodDatabaseType postgresql,
+    messageBroker kafka,
+    cacheProvider hazelcast,
+    websocket spring-websocket,
+    buildTool maven,
+    serverPort 8081,
+    skipUserManagement true
+  }
+  entities CustomerRequest
+}
+
+entity Customer{}
+
+relationship OneToOne {
+  Customer {User(login) } to User
+}
+
+entity CustomerRequest {
+    userName String
+    beginLoc String required
+    endLoc String required
+    operationDate Instant required
+    orderStatus CustomerRequestStatus
+    carType CarType
+}
+enum CarType{
+    SMALL, MIDDLE, BIG
+}
+
+
+enum CustomerRequestStatus{
+    CREATED, ONPROGRESS, DONE, CANCELLED
+}
+
+
+service CustomerRequest with serviceImpl
+paginate CustomerRequest with pagination
+dto CustomerRequest with mapstruct
+microservice CustomerRequest with siparis
+
+
